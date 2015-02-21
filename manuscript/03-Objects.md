@@ -1,6 +1,6 @@
 # Objects
 
-A lot of ECMAScript 6 focused on improving the utility of objects. The focus makes sense given that nearly every value in JavaScript is represented by some type of object. Additionally, the number of objects used in an average Javascript program continues to increase, meaning that developers are writing more objects all the time. With more objects comes the necessity to use them more effectively.
+A lot of ECMAScript 6 focused on improving the utility of objects. The focus makes sense given that nearly every value in JavaScript is represented by some type of object. Additionally, the number of objects used in an average JavaScript program continues to increase, meaning that developers are writing more objects all the time. With more objects comes the necessity to use them more effectively.
 
 ECMAScript 6 improves objects in a number of ways, from simple syntax to new ways of manipulating and interacting with objects.
 
@@ -388,7 +388,7 @@ let friend = {
 };
 ```
 
-The call to `super.getGreeting.call(this)` is the same as `Object.getPrototypeOf(this).getGreeting.call(this)` or `this.__proto__.getGreeting.call(this)`. Similarly, you can call any method on an object's prototype by using a `super` reference.
+The call to `super.getGreeting()` is the same as `Object.getPrototypeOf(this).getGreeting.call(this)` or `this.__proto__.getGreeting.call(this)`. Similarly, you can call any method on an object's prototype by using a `super` reference.
 
 If you're calling a prototype method with the exact same name, then you can also call `super` as a function, for example:
 
@@ -478,34 +478,7 @@ friend.getGreeting = getGlobalGreeting;
 friend.getGreeting();               // throws error
 ```
 
-Here the global `getGlobalGreeting()` function is used to overwrite the previously-defined `getGreeting()` method on `friend`. Calling `friend.getGreeting()` at that point results in an error as well. The value of `[[HomeObject]]` is only set when the function is first created, so even assigning onto an object doesn't fix the problem. Fortunately, ECMAScript 6 has a solution.
-
-Every function has a `toMethod()` method that allows you to create a new version of the same function that has its `[[HomeObject]]` set to a specific object. For example:
-
-```js
-// prototype is person
-let friend = {
-    __proto__: person,
-    getGreeting() {
-        return super() + ", hi!";
-    }
-};
-
-function getGlobalGreeting() {
-    return super.getGreeting() + ", yo!";
-}
-
-console.log(friend.getGreeting());  // "Hello, hi!"
-
-// assign getGreeting to the global function
-var getFriendlyGreeting = getGlobalGreeting.toMethod(friend);
-
-console.log(getFriendlyGreeting());  // "Hello, yo!"
-```
-
-This code uses `toMethod()` to create a new copy of `getGlobalGreeting()` whose `[[HomeObject]]` is set to `friend` and is called `getFriendlyGreeting()`. That means the `super` reference inside of the function will now work and return the correct value. Keep in mind that the original `getGlobalGreeting()` still has no `[[HomeObject]]`. Instead, a new copy of the function was created and stored in `getFriendlyGreeting()`. The `getFriendlyGreeting()` method can properly look up `super` even though it's not called as a method of `friend`.
-
-W> This is an important distinction between `this` and `super`. While `this` is evaluated at runtime, `super` is influenced by where the function was created. The value of `[[HomeObject]]` doesn't change after a method is created, so passing around functions with `super` references can be very confusing. In most cases, it's a good idea to not remove or add methods after an object has been created. The `toMethod()` method is there if you really want to use it, but it's best to avoid doing so unless absolutely necessary.
+Here the global `getGlobalGreeting()` function is used to overwrite the previously-defined `getGreeting()` method on `friend`. Calling `friend.getGreeting()` at that point results in an error as well. The value of `[[HomeObject]]` is only set when the function is first created, so even assigning onto an object doesn't fix the problem.
 
 ## Summary
 
@@ -515,6 +488,6 @@ ECMAScript 6 makes several changes to object literals. Shorthand property defini
 
 The `Object.assign()` method makes it easier to change multiple properties on a single object at once. This can be very useful if you use the mixin pattern.
 
-It's now possible to modify an object's prototype after it's already created using `Object.setPrototypeOf()`. ECMAScript 6 also defines the behavior of the `__proto__` property, which is an accessor property whose getter calls `Object.getPrototypeOf()` and whose setter calls 'Object.setPrototypeOf()`.
+It's now possible to modify an object's prototype after it's already created using `Object.setPrototypeOf()`. ECMAScript 6 also defines the behavior of the `__proto__` property, which is an accessor property whose getter calls `Object.getPrototypeOf()` and whose setter calls `Object.setPrototypeOf()`.
 
 The `super` keyword can now be used to call methods on an object's prototype. It can be used either standalone as a method, such as `super()`, or as a reference to the prototype itself, such as `super.getGreeting()`. In both cases, the `this`-binding is setup automatically to work with the current value of `this`. You can change how `super` is evaluated inside of a function by calling `toMethod()` and specifying a new `[[HomeObject]]`. This method returns a new copy of the function whose `[[HomeObject]]` is the argument that was passed in.

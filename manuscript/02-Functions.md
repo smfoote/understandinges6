@@ -303,7 +303,7 @@ console.log(doAnotherThing.name);       // "doAnotherThing"
 
 In this code, `doSomething()` has a `name` property equal to `"doSomething"` because it's a function declaration. The anonymous function expression `doAnotherThing()` has a `name` of `"doAnotherThing"` due to the variable to which it is assigned.
 
-While appropriate names for function declarations and function expressions, as in the last example, are easy to find, ECMAScript 6 goes further to ensure that all functions have appropriate names:
+While appropriate names for function declarations and function expressions are easy to find, ECMAScript 6 goes further to ensure that all functions have appropriate names:
 
 ```js
 var doSomething = function doSomethingElse() {
